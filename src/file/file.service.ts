@@ -12,7 +12,7 @@ export interface UploadFile {
 
 @Injectable()
 export class FileService {
-  constructor(@InjectModel(File.name) private imageModel: Model<File>) {}
+  constructor(@InjectModel(File.name) private imageModel: Model<File>) { }
 
   // Create (Upload)
   async uploadImage(file: UploadFile): Promise<File> {
@@ -30,8 +30,9 @@ export class FileService {
           createResponse(null, 'File not found', HttpStatus.NOT_FOUND),
           HttpStatus.NOT_FOUND,
         );
+      } else {
+        return image;
       }
-      return image;
     } catch (error) {
       throw new HttpException(
         createResponse(null, 'File not found', HttpStatus.NOT_FOUND),

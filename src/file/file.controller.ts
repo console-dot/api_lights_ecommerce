@@ -15,10 +15,11 @@ import { FileService } from './file.service';
 import { Response } from 'express';
 import { createResponse } from 'src/common/utils/response.util';
 import { UploadFile } from './file.service';
+import { Public } from 'src/auth/constants';
 
 @Controller('file')
 export class FileController {
-  constructor(private readonly imageService: FileService) {}
+  constructor(private readonly imageService: FileService) { }
 
   // Create (Upload)
   @Post('upload')
@@ -49,6 +50,7 @@ export class FileController {
   }
 
   // Read (Get by ID)
+  @Public()
   @Get(':id')
   async getFile(@Param('id') id: string, @Res() res: Response) {
     try {

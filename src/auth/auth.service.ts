@@ -23,7 +23,7 @@ export class AuthService {
     // Step 2: Check if the password matches
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      throw new UnauthorizedException('Invalid email or password');
+      throw new UnauthorizedException('wrong password');
     }
     const payload = { sub: user.email, name: user.name };
     return {
