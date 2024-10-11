@@ -13,7 +13,7 @@ import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dtos/add-category.dto';
 import { UpdateCategoryDto } from './dtos/update-category.dto';
 import { Response } from 'express';
-import { createResponse } from 'src/common/utils/response.util';
+import { createResponse } from '../common/utils/response.util';
 
 @Controller('category')
 export class CategoryController {

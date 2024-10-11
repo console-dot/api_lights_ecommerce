@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { File } from './file.schema';
-import { createResponse } from 'src/common/utils/response.util';
+import { createResponse } from '../common/utils/response.util';
 
 export interface UploadFile {
   buffer: Buffer;

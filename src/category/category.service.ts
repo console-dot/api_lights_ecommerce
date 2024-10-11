@@ -4,7 +4,7 @@ import { Model } from 'mongoose';
 import { Category } from './category.schema';
 import { CreateCategoryDto } from './dtos/add-category.dto';
 import { UpdateCategoryDto } from './dtos/update-category.dto';
-import { createResponse } from 'src/common/utils/response.util';
+import { createResponse } from '../common/utils/response.util';
 
 @Injectable()
 export class CategoryService {
