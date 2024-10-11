@@ -3,7 +3,6 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { ValidationPipeOptions } from './common/interfaces/user.interface';
 import { ConfigService } from '@nestjs/config';
-import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.interface';
 import { Request, Response } from 'express';
 
 async function bootstrap() {
@@ -18,7 +17,7 @@ async function bootstrap() {
     forbidNonWhitelisted: true,
     disableErrorMessages: false,
   };
-  
+
   app.enableCors({
     origin: '*',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
@@ -26,20 +25,20 @@ async function bootstrap() {
   });
 
   app.useGlobalPipes(new ValidationPipe(validationOptions));
-  
-  // If running in a serverless environment (like Vercel), we won't call app.listen()
+
+  // Start the application normally if not running in a serverless environment
   if (process.env.NEST_ENV !== 'vercel') {
     await app.listen(port || 3000);
   }
 }
 
-// Export the handler for Vercel
-export async function handler(req: Request, res: Response) {
+// Export the handler function as the default export
+export default async (req: Request, res: Response) => {
   const app = await NestFactory.create(AppModule);
   await app.init();
   const server = app.getHttpAdapter().getInstance();
   server(req, res);
-}
+};
 
 // Start the application normally if not running on Vercel
 bootstrap();
