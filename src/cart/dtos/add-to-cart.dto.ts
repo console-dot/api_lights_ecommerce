@@ -1,6 +1,17 @@
-import { IsArray } from 'class-validator';
+import { IsObject, IsString, IsNumber } from 'class-validator';
+
+export class ProductDto {
+  @IsString()
+  productId: string;
+
+  @IsNumber()
+  quantity: number;
+}
 
 export class AddToCartDto {
-  @IsArray()
-  productIds: [];
+  @IsObject()
+  cartProduct: ProductDto;
+
+  @IsString()
+  userId: string;
 }
