@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { JwtService } from '@nestjs/jwt';
@@ -28,6 +29,7 @@ export class AuthService {
     const payload = { sub: user.email, name: user.name };
     return {
       access_token: await this.jwtService.signAsync(payload),
+      user,
     };
   }
 }

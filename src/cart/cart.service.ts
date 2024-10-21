@@ -1,20 +1,43 @@
+/* eslint-disable prettier/prettier */
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
 import { Cart } from './cart.schema';
-import { AddToCartDto } from './dtos/add-to-cart.dto';
+import { Model } from 'mongoose';
 import { UpdateCartDto } from './dtos/update-cart.dto';
 import { createResponse } from '../common/utils/response.util';
 
 @Injectable()
 export class CartService {
-  constructor(@InjectModel(Cart.name) private productModel: Model<Cart>) {}
-
-  async add(addToCart: AddToCartDto): Promise<Cart> {
+  constructor(@InjectModel(Cart.name) private cartModel: Model<Cart>) {}
+  async addUpdate(addToCartDto): Promise<{ cart: Cart; message: string }> {
+    const { userId, product } = addToCartDto;
+    const { productId, quantity } = product;
     try {
-      const product = new this.productModel(addToCart);
-      return product.save();
+      let cart = await this.cartModel.findOne({ userId });
+      if (!cart) {
+        cart = new this.cartModel({
+          userId,
+          products: [{ productId, quantity }],
+        });
+        await cart.save();
+        return { cart, message: 'Cart created successfully' };
+      } else {
+        const productIndex = cart.products.findIndex(
+          (item) => item.productId.toString() === productId,
+        );
+
+        if (productIndex > -1) {
+          cart.products[productIndex].quantity = quantity;
+          await cart.save();
+          return { cart, message: 'Product quantity updated successfully' };
+        } else {
+          cart.products.push({ productId, quantity });
+          await cart.save();
+          return { cart, message: 'Product added to cart successfully' };
+        }
+      }
     } catch (error) {
+      console.log(error);
       throw new HttpException(
         createResponse(
           null,
@@ -26,10 +49,16 @@ export class CartService {
     }
   }
 
-  async findAll(): Promise<Cart[]> {
+  async findAll(): Promise<{ cart: Cart[]; message: string }> {
     try {
-      return this.productModel.find().populate('productIds').exec();
+      const cart = await this.cartModel
+        .find()
+        .populate('userId')
+        .populate('products.productId')
+        .exec();
+      return { cart, message: 'Cart retrieved successfully' };
     } catch (error) {
+      console.log(error);
       throw new HttpException(
         createResponse(
           null,
@@ -43,9 +72,10 @@ export class CartService {
 
   async findOne(id: string): Promise<Cart> {
     try {
-      const product = await this.productModel
+      const product = await this.cartModel
         .findById(id)
-        .populate('productIds')
+        .populate('userId')
+        .populate('products.productId')
         .exec();
       if (!product) {
         throw new HttpException(
@@ -68,7 +98,7 @@ export class CartService {
 
   async update(id: string, updateCartDto: UpdateCartDto): Promise<Cart> {
     try {
-      const updatedProduct = await this.productModel
+      const updatedProduct = await this.cartModel
         .findByIdAndUpdate(id, updateCartDto, { new: true })
         .exec();
       if (!updatedProduct) {
@@ -89,23 +119,42 @@ export class CartService {
       );
     }
   }
-  async delete(id: string): Promise<void> {
+  async deleteCartItem(product): Promise<Cart> {
     try {
-      const result = await this.productModel.findByIdAndDelete(id).exec();
-      if (!result) {
+      const { userId, productId } = product;
+      const cartExist = await this.cartModel.findOne({ userId });
+      if (!cartExist) {
         throw new HttpException(
           createResponse(null, 'Cart not found', HttpStatus.NOT_FOUND),
           HttpStatus.NOT_FOUND,
         );
       }
+
+      const productIndex = cartExist.products.findIndex(
+        (item) => item.productId.toString() === productId,
+      );
+
+      if (productIndex > -1) {
+        cartExist.products = cartExist.products.filter(
+          (item) => item.productId.toString() !== productId,
+        );
+
+        await cartExist.save();
+        return cartExist;
+      } else {
+        throw new HttpException(
+          createResponse(
+            null,
+            'Product not found in cart',
+            HttpStatus.NOT_FOUND,
+          ),
+          HttpStatus.NOT_FOUND,
+        );
+      }
     } catch (error) {
       throw new HttpException(
-        createResponse(
-          null,
-          'Internal Server Error',
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        ),
-        HttpStatus.INTERNAL_SERVER_ERROR,
+        createResponse(null, error?.response.message, error?.response.status),
+        HttpStatus.NOT_FOUND,
       );
     }
   }

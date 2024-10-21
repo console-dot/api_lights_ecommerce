@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import {
   Body,
   Controller,
@@ -10,53 +11,43 @@ import {
   Res,
 } from '@nestjs/common';
 import { CartService } from './cart.service';
-import { AddToCartDto } from './dtos/add-to-cart.dto';
 import { UpdateCartDto } from './dtos/update-cart.dto';
 import { createResponse } from '../common/utils/response.util';
 import { Response } from 'express';
+import { Public } from 'src/auth/constants';
 
 @Controller('cart')
 export class CartController {
   constructor(private readonly cartService: CartService) {}
 
   @Post()
-  async addToCart(
-    @Body() createProductDto: AddToCartDto,
-    @Res() res: Response,
-  ) {
+  async addToCart(@Body() addToCartDto, @Res() res: Response) {
     try {
-      const cart = await this.cartService.add(createProductDto);
+      const { cart, message } = await this.cartService.addUpdate(addToCartDto);
       return res
-        .status(HttpStatus.CREATED)
-        .json(
-          createResponse(cart, 'Cart created successfully', HttpStatus.CREATED),
-        );
+        .status(HttpStatus.OK)
+        .json(createResponse(cart, message, HttpStatus.OK));
     } catch (error) {
+      console.error(error);
       return res
-        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .status(error.status || HttpStatus.INTERNAL_SERVER_ERROR)
         .json(
           createResponse(
             null,
-            'Internal Server Error',
-            HttpStatus.INTERNAL_SERVER_ERROR,
+            error.response?.message || 'Internal Server Error',
+            error.status || HttpStatus.INTERNAL_SERVER_ERROR,
           ),
         );
     }
   }
-
+  @Public()
   @Get()
-  async getAllProducts(@Res() res: Response) {
+  async getCarts(@Res() res: Response) {
     try {
       const cart = await this.cartService.findAll();
       return res
         .status(HttpStatus.OK)
-        .json(
-          createResponse(
-            cart,
-            'Products retrieved successfully',
-            HttpStatus.OK,
-          ),
-        );
+        .json(createResponse(cart, cart.message, HttpStatus.OK));
     } catch (error) {
       return res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -116,29 +107,27 @@ export class CartController {
     }
   }
 
-  @Delete(':id')
-  async deleteProduct(@Param('id') id: string, @Res() res: Response) {
+  @Delete()
+  async deleteProduct(@Body() product, @Res() res: Response) {
     try {
-      await this.cartService.delete(id);
+      const cart = await this.cartService.deleteCartItem(product);
       return res
-        .status(HttpStatus.NO_CONTENT)
+        .status(HttpStatus.OK)
         .json(
           createResponse(
-            null,
-            'Cart deleted successfully',
-            HttpStatus.NO_CONTENT,
+            cart.products,
+            'Product deleted from Cart successfully',
+            HttpStatus.OK,
           ),
         );
     } catch (error) {
-      return res
-        .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json(
-          createResponse(
-            null,
-            'Internal Server Error',
-            HttpStatus.INTERNAL_SERVER_ERROR,
-          ),
-        );
+      return res.json(
+        createResponse(
+          error.response.data,
+          error.response.message,
+          error.response.status,
+        ),
+      );
     }
   }
 }

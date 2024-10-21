@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import {
   MiddlewareConsumer,
   Module,
@@ -27,6 +28,7 @@ import { CategoryCardDesignsModule } from './categoryCardDesign/categoryCardDesi
 import { DiscountOffersModule } from './discountOffer/discountOffer.module';
 import { SignUpNewLettersModule } from './signUpNewLetter/signUpNewLetter.module';
 import { BlogsModule } from './blogs/blogs.module';
+import { CheckoutModule } from './checkout/checkout.module';
 
 @Module({
   imports: [
@@ -55,6 +57,7 @@ import { BlogsModule } from './blogs/blogs.module';
     DiscountOffersModule,
     SignUpNewLettersModule,
     BlogsModule,
+    CheckoutModule,
   ],
   controllers: [AppController],
   providers: [
