@@ -33,6 +33,7 @@ export class ProductService {
         .find()
         .populate('categoryId')
         .populate('gallery')
+        .populate('avatar')
         .exec();
     } catch (error) {
       throw new HttpException(

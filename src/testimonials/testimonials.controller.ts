@@ -11,6 +11,7 @@ import {
 import { TestimonialService } from './testimonials.service';
 import { CreateTestimonialDto } from './dtos/create-testimonials.dto';
 import { UpdateTestimonialDto } from './dtos/update-testimonials.dto';
+import { Public } from 'src/auth/constants';
 
 @Controller('testimonial')
 export class TestimonialController {
@@ -20,7 +21,7 @@ export class TestimonialController {
   async create(@Body() createtestimonialDto: CreateTestimonialDto) {
     return this.testimonialService.create(createtestimonialDto);
   }
-
+  @Public()
   @Get()
   async findAll() {
     return this.testimonialService.findAll();

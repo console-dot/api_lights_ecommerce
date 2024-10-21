@@ -19,11 +19,11 @@ export class TestimonialService {
   }
 
   async findAll(): Promise<Testimonial[]> {
-    return this.testimonialModel.find().exec();
+    return this.testimonialModel.find().populate('avatar').exec();
   }
 
   async findOne(id: string): Promise<Testimonial> {
-    return this.testimonialModel.findById(id).exec();
+    return this.testimonialModel.findById(id).populate('avatar');
   }
   async login(email: string): Promise<Testimonial> {
     return this.testimonialModel.findOne({ email: email }).exec();

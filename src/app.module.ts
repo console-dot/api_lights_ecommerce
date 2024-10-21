@@ -19,6 +19,14 @@ import { FileModule } from './file/file.module';
 import { ProductsModule } from './products/products.module';
 import { TestimonialModule } from './testimonials/testimonials.module';
 import { CartModule } from './cart/cart.module';
+import { BannersModule } from './banner/banner.module';
+import { LuxurysModule } from './luxury/luxury.module';
+import { DecorateLightsModule } from './decorateLight/decorateLight.module';
+import { LightHousesModule } from './lightHouse/lightHouset.module';
+import { CategoryCardDesignsModule } from './categoryCardDesign/categoryCardDesign.module';
+import { DiscountOffersModule } from './discountOffer/discountOffer.module';
+import { SignUpNewLettersModule } from './signUpNewLetter/signUpNewLetter.module';
+import { BlogsModule } from './blogs/blogs.module';
 
 @Module({
   imports: [
@@ -39,6 +47,14 @@ import { CartModule } from './cart/cart.module';
     ProductsModule,
     TestimonialModule,
     CartModule,
+    BannersModule,
+    LuxurysModule,
+    DecorateLightsModule,
+    LightHousesModule,
+    CategoryCardDesignsModule,
+    DiscountOffersModule,
+    SignUpNewLettersModule,
+    BlogsModule,
   ],
   controllers: [AppController],
   providers: [

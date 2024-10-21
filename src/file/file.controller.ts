@@ -69,6 +69,7 @@ export class FileController {
 
   // Read (Get all files)
   @Get()
+  @Public()
   async getAllFiles(@Res() res: Response) {
     try {
       const files = await this.imageService.findAll();
