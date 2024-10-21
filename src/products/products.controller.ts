@@ -14,6 +14,7 @@ import { ProductService } from './products.service';
 import { CreateProductDto } from './dtos/add-product.dto';
 import { createResponse } from '../common/utils/response.util';
 import { Response } from 'express';
+import { Public } from 'src/auth/constants';
 
 @Controller('product')
 export class ProductController {
@@ -47,7 +48,7 @@ export class ProductController {
         );
     }
   }
-
+  @Public()
   @Get()
   async getAllProducts(@Res() res: Response) {
     try {
@@ -73,7 +74,7 @@ export class ProductController {
         );
     }
   }
-
+@Public()
   @Get(':id')
   async getProduct(@Param('id') id: string, @Res() res: Response) {
     try {

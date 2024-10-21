@@ -1,6 +1,7 @@
 import {
   IsArray,
   IsBoolean,
+  IsIn,
   IsNotEmpty,
   IsNumber,
   IsString,
@@ -32,4 +33,7 @@ export class CreateProductDto {
   gallery: object;
   @IsBoolean()
   inStock: boolean;
+  @IsString()
+  @IsIn(['new_arrivals', 'feature', 'sales'])
+  status: string;
 }

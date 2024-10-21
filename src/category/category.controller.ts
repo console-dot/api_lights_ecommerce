@@ -13,7 +13,8 @@ import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dtos/add-category.dto';
 import { UpdateCategoryDto } from './dtos/update-category.dto';
 import { Response } from 'express';
-import { createResponse } from '../common/utils/response.util';
+import { createResponse } from 'src/common/utils/response.util';
+import { Public } from 'src/auth/constants';
 
 @Controller('category')
 export class CategoryController {
@@ -50,6 +51,7 @@ export class CategoryController {
   }
 
   // Read (Get all categories)
+  @Public()
   @Get()
   async getAllCategories(@Res() res: Response) {
     try {
@@ -77,6 +79,7 @@ export class CategoryController {
   }
 
   // Read (Get category by ID)
+  @Public()
   @Get(':id')
   async getCategory(@Param('id') id: string, @Res() res: Response) {
     try {
