@@ -12,7 +12,7 @@ import {
 import { CartService } from './cart.service';
 import { AddToCartDto } from './dtos/add-to-cart.dto';
 import { UpdateCartDto } from './dtos/update-cart.dto';
-import { createResponse } from 'src/common/utils/response.util';
+import { createResponse } from '../common/utils/response.util';
 import { Response } from 'express';
 
 @Controller('cart')

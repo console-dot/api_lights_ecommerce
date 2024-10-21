@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { ProductService } from './products.service';
 import { CreateProductDto } from './dtos/add-product.dto';
-import { createResponse } from 'src/common/utils/response.util';
+import { createResponse } from '../common/utils/response.util';
 import { Response } from 'express';
 import { Public } from 'src/auth/constants';
 
