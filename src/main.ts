@@ -4,9 +4,13 @@ import { ValidationPipe } from '@nestjs/common';
 import { ValidationPipeOptions } from './common/interfaces/user.interface';
 import { ConfigService } from '@nestjs/config';
 import { Request, Response } from 'express';
+import { ExpressAdapter } from '@nestjs/platform-express';
+import * as express from 'express';
 
-async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+const server = express();
+
+async function createApp() {
+  const app = await NestFactory.create(AppModule, new ExpressAdapter(server));
 
   const configService = app.get(ConfigService);
   const port = configService.get<number>('port');
@@ -26,19 +30,22 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe(validationOptions));
 
-  // Start the application normally if not running in a serverless environment
-  if (process.env.NEST_ENV !== 'vercel') {
-    await app.listen(port || 3000);
-  }
+  return { app, port };
 }
 
-// Export the handler function as the default export
+// Export the handler function for Vercel
 export default async (req: Request, res: Response) => {
-  const app = await NestFactory.create(AppModule);
+  const { app } = await createApp();
   await app.init();
   const server = app.getHttpAdapter().getInstance();
   server(req, res);
 };
 
 // Start the application normally if not running on Vercel
-bootstrap();
+if (process.env.NEST_ENV !== 'vercel') {
+  createApp().then(({ app, port }) => {
+    app.listen(port || 3000, () => {
+      console.log(`App is running on port ${port || 3000}`);
+    });
+  });
+}
