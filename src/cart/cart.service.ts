@@ -9,7 +9,7 @@ import { createResponse } from '../common/utils/response.util';
 @Injectable()
 export class CartService {
   constructor(@InjectModel(Cart.name) private cartModel: Model<Cart>) {}
-  async addUpdate(addToCartDto): Promise<{ cart: Cart; message: string }> {
+  async addUpdate(addToCartDto): Promise<{ cart: any; message: string }> {
     const { userId, product } = addToCartDto;
     const { productId, quantity } = product;
     try {

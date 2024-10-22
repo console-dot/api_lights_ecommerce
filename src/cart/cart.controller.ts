@@ -23,6 +23,15 @@ export class CartController {
   @Post()
   async addToCart(@Body() addToCartDto, @Res() res: Response) {
     try {
+      if (!addToCartDto.product.productId || !addToCartDto.userId) {
+        return res.json(
+          createResponse(
+            null,
+            'Product Id or User Id is missing',
+            HttpStatus.BAD_REQUEST,
+          ),
+        );
+      }
       const { cart, message } = await this.cartService.addUpdate(addToCartDto);
       return res
         .status(HttpStatus.OK)

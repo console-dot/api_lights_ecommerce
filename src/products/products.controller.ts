@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import {
   Body,
   Controller,
@@ -15,6 +16,7 @@ import { CreateProductDto } from './dtos/add-product.dto';
 import { createResponse } from '../common/utils/response.util';
 import { Response } from 'express';
 import { Public } from 'src/auth/constants';
+import { UpdateProductDto } from './dtos/update-product.dto';
 
 @Controller('product')
 export class ProductController {
@@ -74,7 +76,7 @@ export class ProductController {
         );
     }
   }
-@Public()
+  @Public()
   @Get(':id')
   async getProduct(@Param('id') id: string, @Res() res: Response) {
     try {
@@ -98,7 +100,7 @@ export class ProductController {
   @Put(':id')
   async updateProduct(
     @Param('id') id: string,
-    @Body() updateProductDto: CreateProductDto,
+    @Body() updateProductDto: UpdateProductDto,
     @Res() res: Response,
   ) {
     try {
