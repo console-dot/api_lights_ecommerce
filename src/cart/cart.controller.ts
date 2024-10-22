@@ -69,7 +69,7 @@ export class CartController {
         );
     }
   }
-
+  @Public()
   @Get(':id')
   async getProduct(@Param('id') id: string, @Res() res: Response) {
     try {
