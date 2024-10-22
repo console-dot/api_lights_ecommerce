@@ -73,9 +73,17 @@ export class CartService {
   async findOne(id: string): Promise<Cart> {
     try {
       const product = await this.cartModel
-        .findById(id)
+        .findOne({ userId: id })
         .populate('userId')
-        .populate('products.productId')
+        .populate({
+          path: 'products',
+          populate: {
+            path: 'productId',
+            populate: {
+              path: 'avatar',
+            },
+          },
+        })
         .exec();
       if (!product) {
         throw new HttpException(
