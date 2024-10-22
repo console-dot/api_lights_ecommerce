@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import {
   IsArray,
   IsBoolean,
@@ -13,9 +14,6 @@ export class CreateProductDto {
   @IsNotEmpty()
   @IsNumber()
   stock: number;
-  @IsNotEmpty()
-  @IsNumber()
-  review: number;
   @IsNotEmpty()
   @IsNumber()
   price: number;
@@ -35,5 +33,5 @@ export class CreateProductDto {
   inStock: boolean;
   @IsString()
   @IsIn(['new_arrivals', 'feature', 'sales'])
-  status: string;
+  section: string;
 }
