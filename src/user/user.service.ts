@@ -40,7 +40,10 @@ export class UserService {
     return this.userModel.findById(id).exec();
   }
   async login(email: string): Promise<User> {
-    return this.userModel.findOne({ email: email }).exec();
+    return this.userModel
+      .findOne({ email: email })
+      .select('-refreshToken')
+      .exec();
   }
 
   async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
@@ -51,5 +54,12 @@ export class UserService {
 
   async remove(id: string): Promise<User> {
     return this.userModel.findByIdAndDelete(id).exec();
+  }
+  async updateRefreshToken(user: any, refreshToken: string) {
+    await this.userModel.updateOne({ _id: user._id }, { refreshToken });
+  }
+
+  async findById(userId: string) {
+    return this.userModel.findById(userId).exec();
   }
 }
