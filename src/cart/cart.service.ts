@@ -23,7 +23,7 @@ export class CartService {
         return { cart, message: 'Cart created successfully' };
       } else {
         const productIndex = cart.products.findIndex(
-          (item) => item.productId.toString() === productId,
+          (item) => item.productId.toString() === productId.toString(),
         );
 
         if (productIndex > -1) {

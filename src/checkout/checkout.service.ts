@@ -15,7 +15,8 @@ export class CheckoutService {
     try {
       const checkout = new this.checkoutModel(checkoutDate);
       await checkout.save();
-      return { checkout, message: 'Checkout successfully' };
+      const populatedCheckout = await checkout.populate('products.productId');
+      return { checkout: populatedCheckout, message: 'Checkout successfully' };
     } catch (error) {
       console.log(error);
       throw new HttpException(
@@ -34,6 +35,7 @@ export class CheckoutService {
       const checkout = await this.checkoutModel
         .find()
         .populate('products.productId')
+        .populate('categoryId')
         .exec();
       return { checkout, message: 'Checkout successfully' };
     } catch (error) {
@@ -53,9 +55,7 @@ export class CheckoutService {
     try {
       const checkout = await this.checkoutModel
         .findById(id)
-        .populate('categoryId')
-        .populate('gallery')
-        .populate('avatar')
+        .populate('products.productId')
         .exec();
       if (!checkout) {
         throw new HttpException(

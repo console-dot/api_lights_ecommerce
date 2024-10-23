@@ -36,8 +36,6 @@ export default async (req: Request, res: Response) => {
 // Start the application normally if not running on Vercel
 if (process.env.NEST_ENV !== 'vercel') {
   createApp().then(({ app, port }) => {
-    app.listen(port || 3000, () => {
-      console.log(`App is running on port ${port || 3000}`);
-    });
+    app.listen(port || 3000, () => {});
   });
 }
