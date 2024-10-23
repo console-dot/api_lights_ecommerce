@@ -24,6 +24,7 @@ export class CheckoutController {
     try {
       const { checkout, message } =
         await this.checkoutServices.create(checkoutData);
+        
       return res
         .status(HttpStatus.OK)
         .json(createResponse(checkout, message, HttpStatus.OK));
