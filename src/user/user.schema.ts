@@ -25,6 +25,8 @@ export class User {
   isActive: boolean;
   @Prop({ type: mongoose.Schema.ObjectId, ref: 'Cart' })
   cartId: Cart;
+  @Prop()
+  refreshToken: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
