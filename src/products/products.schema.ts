@@ -21,7 +21,7 @@ export class Product {
   avatar: string;
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'File' }] })
   gallery: File[];
-  @Prop({ enum: ['new_arrivals', 'feature', 'sales'], type: String })
+  @Prop({ enum: ['new_arrivals', 'feature', 'sales', 'none'], type: String })
   section: string;
 }
 export const ProductSchema = SchemaFactory.createForClass(Product);

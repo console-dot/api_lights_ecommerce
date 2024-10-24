@@ -40,9 +40,9 @@ export class AuthController {
     @Body() body: { refreshToken: string },
     @Res() res: Response,
   ) {
-    const { accessToken } = await this.authService.refreshAccessToken(
-      body.refreshToken,
-    );
-    return res.status(200).json({ accessToken });
+    const oldToken = body.refreshToken;
+    const { accessToken, refreshToken } =
+      await this.authService.refreshAccessToken(oldToken);
+    return res.status(200).json({ accessToken, refreshToken });
   }
 }

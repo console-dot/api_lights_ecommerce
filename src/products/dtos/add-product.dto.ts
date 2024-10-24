@@ -32,6 +32,6 @@ export class CreateProductDto {
   @IsBoolean()
   inStock: boolean;
   @IsString()
-  @IsIn(['new_arrivals', 'feature', 'sales'])
+  @IsIn(['new_arrivals', 'feature', 'sales', 'none'])
   section: string;
 }

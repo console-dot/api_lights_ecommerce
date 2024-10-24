@@ -57,19 +57,19 @@ export class AuthService {
     return { accessToken, refreshToken };
   }
 
-  async refreshAccessToken(refreshToken: string) {
+  async refreshAccessToken(oldToken: string) {
     try {
-      const payload = await this.jwtService.verifyAsync(refreshToken, {
+      const payload = await this.jwtService.verifyAsync(oldToken, {
         secret: process.env.JWT_REFRESH_SECRET,
       });
 
       const user = await this.usersService.findById(payload.sub);
-      if (!user || user.refreshToken !== refreshToken) {
+      if (!user || user.refreshToken !== oldToken) {
         throw new UnauthorizedException('Invalid refresh token');
       }
 
-      const { accessToken } = await this.generateTokens(user);
-      return { accessToken };
+      const { accessToken, refreshToken } = await this.generateTokens(user);
+      return { accessToken, refreshToken };
     } catch (error) {
       throw new UnauthorizedException('Invalid refresh token');
     }
