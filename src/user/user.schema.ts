@@ -5,25 +5,23 @@ export type UserDocument = HydratedDocument<User>;
 
 @Schema()
 export class User {
-  @Prop({ required: true })
-  name: string;
-  @Prop({ required: true })
-  age: number;
-  @Prop({ required: true })
-  postCode: number;
-  @Prop({ required: true })
+  @Prop({ type: String, required: true })
+  firstName: string;
+  @Prop({ type: String, required: true })
+  lastName: string;
+  @Prop({ type: String, required: true })
   password: string;
   @Prop({ required: true })
-  email: string;
-  @Prop({ required: true })
-  province: string;
-  @Prop({ required: true })
-  city: string;
-  @Prop({ required: true })
   address: string;
-  @Prop({ required: true, default: true })
-  isActive: boolean;
-  @Prop({ type: mongoose.Schema.ObjectId, ref: 'Cart' })
+  @Prop({ type: String, required: true })
+  city: string;
+  @Prop({ type: String, required: true })
+  state: string;
+  @Prop({ type: String, required: true })
+  email: string;
+  @Prop({ type: String, required: true })
+  phone: string;
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Cart' })
   cartId: Cart;
   @Prop()
   refreshToken: string;

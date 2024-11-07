@@ -17,7 +17,7 @@ export class Checkout {
   @Prop({ type: String, required: true })
   city: string;
   @Prop({ type: String, required: true })
-  zip: string;
+  state: string;
   @Prop({ type: String, required: true })
   email: string;
   @Prop({ type: String, required: true })

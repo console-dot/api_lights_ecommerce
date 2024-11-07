@@ -19,6 +19,8 @@ export class Product {
   categoryId: Category;
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'File' })
   avatar: string;
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'File' })
+  bgImage: string;
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'File' }] })
   gallery: File[];
   @Prop({ enum: ['new_arrivals', 'feature', 'sales', 'none'], type: String })
