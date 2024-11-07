@@ -7,6 +7,7 @@ import { ConfigService } from '@nestjs/config';
 import { Request, Response } from 'express';
 import { ExpressAdapter } from '@nestjs/platform-express';
 import * as express from 'express';
+import { join } from 'path';
 const server = express();
 async function createApp() {
   const app = await NestFactory.create(AppModule, new ExpressAdapter(server));
@@ -18,6 +19,7 @@ async function createApp() {
     forbidNonWhitelisted: true,
     disableErrorMessages: false,
   };
+  app.use('/assets', express.static(join(__dirname, '..', 'assets')));
   app.enableCors({
     origin: '*',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',

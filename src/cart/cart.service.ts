@@ -5,21 +5,31 @@ import { Cart } from './cart.schema';
 import { Model } from 'mongoose';
 import { UpdateCartDto } from './dtos/update-cart.dto';
 import { createResponse } from '../common/utils/response.util';
+import { User } from 'src/user/user.schema';
 
 @Injectable()
 export class CartService {
-  constructor(@InjectModel(Cart.name) private cartModel: Model<Cart>) {}
+  constructor(
+    @InjectModel(Cart.name) private cartModel: Model<Cart>,
+    @InjectModel(User.name) private userModel: Model<User>,
+  ) {}
   async addUpdate(addToCartDto): Promise<{ cart: any; message: string }> {
-    const { userId, product } = addToCartDto;
+    const { userId, product, cartId } = addToCartDto;
     const { productId, quantity } = product;
     try {
-      let cart = await this.cartModel.findOne({ userId });
-      if (!cart) {
-        cart = new this.cartModel({
+      const user = await this.userModel.findById(userId);
+      const cart = await this.cartModel.findById(cartId);
+      if (!user.cartId && !cart || cartId === null) {
+        const cart = new this.cartModel({
           userId,
           products: [{ productId, quantity }],
         });
-        await cart.save();
+        const newCart = await cart.save();
+        await this.userModel.findOneAndUpdate(
+          { _id: userId },
+          { $set: { cartId: newCart._id } },
+          { new: true },
+        );
         return { cart, message: 'Cart created successfully' };
       } else {
         const productIndex = cart.products.findIndex(
@@ -73,8 +83,7 @@ export class CartService {
   async findOne(id: string): Promise<Cart> {
     try {
       const product = await this.cartModel
-        .findOne({ userId: id })
-        .populate('userId')
+        .findById(id)
         .populate({
           path: 'products',
           populate: {
@@ -129,13 +138,14 @@ export class CartService {
   }
   async deleteCartItem(product): Promise<Cart> {
     try {
-      const { userId, productId } = product;
-      const cartExist = await this.cartModel.findOne({ userId });
-      if (!cartExist) {
+      const { cartId, productId } = product;
+      const userExist = await this.userModel.findById(cartId);
+      const cartExist = await this.cartModel.findById(cartId);
+      if (!cartExist && userExist ) {
         throw new HttpException(
           createResponse(null, 'Cart not found', HttpStatus.NOT_FOUND),
           HttpStatus.NOT_FOUND,
-        );
+        ); 
       }
 
       const productIndex = cartExist.products.findIndex(

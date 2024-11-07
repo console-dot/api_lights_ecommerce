@@ -4,21 +4,58 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Checkout } from './checkout.schema';
 import { createResponse } from '../common/utils/response.util';
+import { Cart } from 'src/cart/cart.schema';
+import { Product, ProductSchema } from 'src/products/products.schema';
 
 @Injectable()
 export class CheckoutService {
   constructor(
     @InjectModel(Checkout.name) private checkoutModel: Model<Checkout>,
+    @InjectModel(Cart.name) private cartModel: Model<Cart>,
+    @InjectModel(Product.name) private productModel: Model<Product>,
   ) {}
 
   async create(checkoutDate): Promise<{ checkout: Checkout; message: string }> {
     try {
+      const cartId = checkoutDate?.cartId;
+      const productIds =
+        checkoutDate.products?.map((item) => item.productId) || [];
       const checkout = new this.checkoutModel(checkoutDate);
       await checkout.save();
+      for (const productId of productIds) {
+        const product = await this.productModel.findById(productId);
+        if (product) {
+          const item = checkoutDate.products?.find(
+            (item) => item.productId.toString() === product._id.toString(),
+          );
+
+          if (item) {
+            const quantityToSubtract = item.quantity;
+            if (product.stock >= quantityToSubtract) {
+              (product.stock -= quantityToSubtract), await product.save();
+            } else {
+              console.error(
+                `Insufficient stock for product ${product._id}. Current stock: ${product.stock}, Requested: ${quantityToSubtract}`,
+              );
+            }
+          }
+        } else {
+          console.warn(`Product with ID ${productId} not found.`);
+        }
+      }
+      const cart = await this.cartModel.findById(cartId);
+      if (cart && Array.isArray(cart.products)) {
+        cart.products = cart.products.filter((item) =>
+          productIds.includes(item.productId),
+        );
+        await cart.save();
+      } else {
+        console.log('Cart not found or products is not an array.');
+      }
       const populatedCheckout = await checkout.populate('products.productId');
       return { checkout: populatedCheckout, message: 'Checkout successfully' };
     } catch (error) {
-      console.log(error);
+      console.error('Error in checkout creation:', error);
       throw new HttpException(
         createResponse(
           null,
@@ -35,7 +72,16 @@ export class CheckoutService {
       const checkout = await this.checkoutModel
         .find()
         .populate('products.productId')
-        .populate('categoryId')
+        .populate({
+          path: 'products',
+          populate: {
+            path: 'productId',
+            populate: {
+              path: 'avatar',
+            },
+          },
+        })
+        // .populate('categoryId')
         .exec();
       return { checkout, message: 'Checkout successfully' };
     } catch (error) {
@@ -56,6 +102,15 @@ export class CheckoutService {
       const checkout = await this.checkoutModel
         .findById(id)
         .populate('products.productId')
+        .populate({
+          path: 'products',
+          populate: {
+            path: 'productId',
+            populate: {
+              path: 'avatar',
+            },
+          },
+        })
         .exec();
       if (!checkout) {
         throw new HttpException(

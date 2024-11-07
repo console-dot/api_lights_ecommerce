@@ -22,14 +22,12 @@ export class UserService {
     }
     const salt = await bcrypt.genSalt();
     const hash = await bcrypt.hash(createUserDto.password, salt);
-    const createCart = new this.cartModel([]);
-    const cartSaved = await createCart.save();
     const createdUser = new this.userModel({
       ...createUserDto,
       password: hash,
-      cartId: [cartSaved?._id],
     });
-    return createdUser.save();
+    const saved = await createdUser.save();
+    return saved;
   }
 
   async findAll(): Promise<User[]> {

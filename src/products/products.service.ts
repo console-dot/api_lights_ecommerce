@@ -34,6 +34,7 @@ export class ProductService {
         .find()
         .populate('categoryId')
         .populate('gallery')
+        .populate('bgImage')
         .populate('avatar')
         .exec();
     } catch (error) {
@@ -54,6 +55,7 @@ export class ProductService {
         .findById(id)
         .populate('categoryId')
         .populate('gallery')
+        .populate('bgImage')
         .populate('avatar')
         .exec();
       if (!product) {

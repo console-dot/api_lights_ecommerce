@@ -29,6 +29,7 @@ import { DiscountOffersModule } from './discountOffer/discountOffer.module';
 import { SignUpNewLettersModule } from './signUpNewLetter/signUpNewLetter.module';
 import { BlogsModule } from './blogs/blogs.module';
 import { CheckoutModule } from './checkout/checkout.module';
+import { EmailModules } from './email/email.module';
 
 @Module({
   imports: [
@@ -58,6 +59,7 @@ import { CheckoutModule } from './checkout/checkout.module';
     SignUpNewLettersModule,
     BlogsModule,
     CheckoutModule,
+    EmailModules,
   ],
   controllers: [AppController],
   providers: [

@@ -20,12 +20,15 @@ export class CategoryService {
 
   // Read (Get all categories)
   async findAll(): Promise<Category[]> {
-    return this.categoryModel.find().exec();
+    return this.categoryModel.find().populate('bgImage').exec();
   }
 
   // Read (Get category by ID)
   async findOne(id: string): Promise<Category> {
-    const category = await this.categoryModel.findById(id).exec();
+    const category = await this.categoryModel
+      .findById(id)
+      .populate('bgImage')
+      .exec();
     if (!category) {
       throw new HttpException(
         createResponse(null, 'Category not found', HttpStatus.NOT_FOUND),

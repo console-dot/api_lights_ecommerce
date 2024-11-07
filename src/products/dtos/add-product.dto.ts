@@ -25,6 +25,9 @@ export class CreateProductDto {
   avatar: string;
   @IsNotEmpty()
   @IsString()
+  bgImage: string;
+  @IsNotEmpty()
+  @IsString()
   description: string;
   @IsNotEmpty()
   @IsArray()

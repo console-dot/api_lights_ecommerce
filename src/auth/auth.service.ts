@@ -20,7 +20,7 @@ export class AuthService {
   async signIn(email: string, password: string): Promise<any> {
     const user = await this.usersService.login(email);
     if (!user) {
-      throw new UnauthorizedException('Invalid email or password');
+      throw new UnauthorizedException('Email not exist');
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
@@ -46,7 +46,7 @@ export class AuthService {
 
     const accessToken = await this.jwtService.signAsync(payload, {
       secret: process.env.JWT_SECRET,
-      expiresIn: '2h', // Access token expiration
+      expiresIn: '1d', // Access token expiration
     });
 
     const refreshToken = await this.jwtService.signAsync(payload, {

@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Res } from '@nestjs/common';
+import { Body, Controller, HttpStatus, Post, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from 'src/user/dtos/create-user.dto';
 import { Public } from './constants';
@@ -31,7 +31,12 @@ export class AuthController {
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
     });
-    return res.status(200).json({ accessToken, refreshToken, user });
+    return res.status(200).json({
+      accessToken,
+      refreshToken,
+      user,
+      status: HttpStatus.OK,
+    });
   }
 
   @Public()

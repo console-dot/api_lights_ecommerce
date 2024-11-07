@@ -8,21 +8,11 @@ import {
 
 export class CreateUserDto {
   @IsNotEmpty()
-  name: string;
-
-  @IsEmail()
-  email: string;
+  firstName: string;
 
   @IsNotEmpty()
-  password: string;
-
-  @IsNotEmpty()
-  @IsNumber()
-  age: number;
-
-  @IsNotEmpty()
-  @IsNumber()
-  postCode: number;
+  @IsString()
+  lastName: string;
 
   @IsNotEmpty()
   @IsString()
@@ -30,14 +20,23 @@ export class CreateUserDto {
 
   @IsNotEmpty()
   @IsString()
-  province: string;
+  city: string;
 
   @IsNotEmpty()
   @IsString()
-  city: string;
+  state: string;
 
-  @IsBoolean()
-  isActive: boolean;
+  @IsNotEmpty()
+  @IsString()
+  email: string;
+
+  @IsNotEmpty()
+  @IsString()
+  password: string;
+
+  @IsNotEmpty()
+  @IsNumber()
+  phone: number;
 
   cartId: string;
 }

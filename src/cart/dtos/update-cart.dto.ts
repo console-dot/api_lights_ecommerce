@@ -11,7 +11,4 @@ export class ProductDto {
 export class UpdateCartDto {
   @IsObject()
   product: ProductDto;
-
-  @IsString()
-  userId: string;
 }
